@@ -7,10 +7,6 @@ interface BaseContentProps {
   children: React.ReactNode;
 }
 
-export const BaseContent = ({ children }: BaseContentProps) => {
-  return (
-    <Stack p="2rem">
-      <VStack spacing={4}>{children}</VStack>
-    </Stack>
-  );
+export const BaseContent = ({ children }: { children: React.ReactNode }) => {
+  return <div className="flex flex-col w-full">{children}</div>;
 };

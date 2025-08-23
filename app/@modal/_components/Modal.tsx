@@ -1,33 +1,22 @@
+// app/@modal/Modal.tsx
 "use client";
-
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  useDisclosure,
-} from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { ReactNode } from "react";
 
-export function BaseModalContent({ children }: { children: React.ReactNode }) {
+export default function ModalLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  useEffect(() => {
-    onOpen();
-  }, [onOpen]);
-
-  const handleClose = () => {
-    onClose();
-    router.back();
-  };
 
   return (
-    <>
-      <Modal isCentered isOpen={isOpen} onClose={handleClose}>
-        <ModalOverlay />
-        <ModalContent>{children}</ModalContent>
-      </Modal>
-    </>
+    <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+      <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+        <button
+          className="absolute top-2 right-2 text-gray-500"
+          onClick={() => router.back()}
+        >
+          ✕
+        </button>
+        {children}
+      </div>
+    </div>
   );
 }

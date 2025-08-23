@@ -1,32 +1,47 @@
-import { Box, Flex, Stack, Text } from "@chakra-ui/react";
 import Link from "next/link";
 
 export default function Footer() {
   return (
-    <Box as="footer" w="100%" p={4} bg="gray.100" color="black">
-      <Flex m={4} justify="space-around" align="flex-start">
-        <Stack spacing={4}>
-          <Text as="h3">LR Brother</Text>
-        </Stack>
-        <Stack spacing={4}>
-          <Text as="h3" mb={10}>
-            Service
-          </Text>
-          <Stack>
-            <Link href="https://liberuntime.com">TeckBlog</Link>
-            <Link href="https://misskey.liberuntime.com">Misskey</Link>
-          </Stack>
-        </Stack>
-        <Stack spacing={4}>
-          <Text as="h3" mb={10}>
-            Connection
-          </Text>
-          <Text>Mail</Text>
-          <Link href="mailto:ao.lr.like.brothers@gmail.com">
+    <footer className="w-full bg-gray-100 text-black p-4">
+      <div className="m-4 flex justify-around items-start">
+        {/* 左 */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">LR Brother</h3>
+        </div>
+
+        {/* 真ん中 */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold mb-2">Service</h3>
+          <div className="flex flex-col space-y-2">
+            <Link
+              href="https://liberuntime.com"
+              className="hover:underline"
+              target="_blank"
+            >
+              TeckBlog
+            </Link>
+            <Link
+              href="https://misskey.liberuntime.com"
+              className="hover:underline"
+              target="_blank"
+            >
+              Misskey
+            </Link>
+          </div>
+        </div>
+
+        {/* 右 */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold mb-2">Connection</h3>
+          <p>Mail</p>
+          <Link
+            href="mailto:ao.lr.like.brothers@gmail.com"
+            className="hover:underline"
+          >
             ao.lr.like.brothers
           </Link>
-        </Stack>
-      </Flex>
-    </Box>
+        </div>
+      </div>
+    </footer>
   );
 }

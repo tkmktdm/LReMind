@@ -1,10 +1,8 @@
 // "use cache";
 
-import { Providers } from "./Providers";
 import type { Metadata } from "next";
 import "./globals.css";
 import { Inter } from "next/font/google";
-import { Box, Container } from "@chakra-ui/react";
 import Header from "./Header";
 import Footer from "./Footer";
 
@@ -24,7 +22,6 @@ export const metadata: Metadata = {
   title: "LR Brother",
   description: "Liberuntime application",
 };
-// const user = await getUser();
 export default async function RootLayout({
   children,
   modal,
@@ -42,19 +39,16 @@ export default async function RootLayout({
       </head>
 
       <body className={inter.className}>
-        <Providers>
-          <Container minW="100%" minH={"6vh"} px={0} bg="white">
-            <Header user={user} />
-          </Container>
-
-          <Container minW="100%" minH="94vh" px={0} bg="white" color="black">
-            {modal}
-            {children}
-          </Container>
-          <Container minW="100%" px={0} bg="white">
-            <Footer />
-          </Container>
-        </Providers>
+        <div className="w-full min-h-[6vh] bg-white">
+          <Header user={user} />
+        </div>
+        <main className="w-full min-h-[94vh] bg-white text-black">
+          {modal}
+          {children}
+        </main>
+        <footer className="w-full bg-white">
+          <Footer />
+        </footer>
       </body>
     </html>
   );
