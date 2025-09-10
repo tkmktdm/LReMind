@@ -172,7 +172,7 @@ export const useModel = () => {
         category_name,
         animation_index,
         priority,
-        src
+        // src
       );
 
       if (result) {

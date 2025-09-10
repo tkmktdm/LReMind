@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useKey } from "@/app/@modal/_hook/useKey";
-import styles from "./style.module.css";
+// import styles from "./style.module.css";
 
 export function ModalOverlay() {
   const router = useRouter();
@@ -10,7 +10,7 @@ export function ModalOverlay() {
   useKey("Escape", () => router.back());
   return (
     <div
-      className={styles.overlay}
+      // className={styles.overlay}
       onClick={() => {
         router.back();
       }}
