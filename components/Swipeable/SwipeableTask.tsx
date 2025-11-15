@@ -3,8 +3,8 @@ import { useSwipeable } from "react-swipeable";
 import { motion, AnimatePresence } from "framer-motion";
 
 type Props = {
-  id: number;
-  onDelete: (id: number) => void;
+  id: string;
+  onDelete: (id: string) => void;
   children: React.ReactNode;
 };
 export const SwipeableTask = ({ id, onDelete, children }: Props) => {

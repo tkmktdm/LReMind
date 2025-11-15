@@ -1,3 +1,4 @@
+"use client";
 import { useEffect } from "react";
 import { useState } from "react";
 import { atom, useAtom } from "jotai";
@@ -171,7 +172,7 @@ export const useModel = () => {
       const result = await model.motion(
         category_name,
         animation_index,
-        priority,
+        priority
         // src
       );
 

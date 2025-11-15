@@ -30,6 +30,7 @@ export type Task = {
   id: number;
   title: string;
   notes: string;
+  user_id?: number;
 };
 
 type Props = {
