@@ -43,7 +43,6 @@ export const TaskCard = ({ id, url, task }: Props) => {
   const [editNotes, setEditNotes] = useState(task ? task.notes : "");
   const updateTask = useUpdateTasks();
   const storeTask = useStoreTasks();
-
   // console.log(task);
 
   const MagicLink = chakra<typeof NextLink, NextLinkProps>(NextLink, {

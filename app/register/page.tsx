@@ -18,6 +18,7 @@ import { useForm } from "react-hook-form";
 import React from "react";
 import { ItemList } from "@/components/ItemList";
 import { signActionServer } from "@/services/signActionServices";
+import { useRouter } from "next/navigation";
 
 // フォームで使用する変数の型を定義
 type FormInputs = {
@@ -32,6 +33,7 @@ type FormInputs = {
 };
 
 export default function RegisterIndex() {
+  const router = useRouter();
   // React Hook Formでバリデーションやフォームが送信されたときの処理などを書くために必要な関数
   const {
     handleSubmit,
@@ -43,14 +45,18 @@ export default function RegisterIndex() {
   const onSubmit = async (data: FormInputs) => {
     const signAction = new signActionServer();
     const response = await signAction.postRegister(data);
+    console.log("RegisterIndexPage--------");
     console.log(response);
+    if (response.status == 200 && response.data) {
+      router.push("/");
+    }
   };
 
   const [show, setShow] = React.useState(false);
   const handleClick = () => setShow(!show);
 
   return (
-    <Stack spacing={4} py="4rem" h="100%">
+    <Stack spacing={4} py="4rem" px="2rem" h="100%">
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormControl isInvalid={!!errors.name}>
           <FormLabel htmlFor="name">名前</FormLabel>

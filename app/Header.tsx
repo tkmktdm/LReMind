@@ -31,7 +31,7 @@ export default function Header({ user }: any) {
             <Link href="/">LR</Link>
           </Box>
           <Box>
-            <Link href="/articles">Article</Link>
+            <Link href="/categories">Category</Link>
           </Box>
           <Box>
             <Link href="/events">Event</Link>
@@ -59,10 +59,10 @@ export default function Header({ user }: any) {
               </Menu>
             </Box>
           ) : (
-            <Box position={"fixed"} right={0}>
+            <Box position={"fixed"} right={2}>
               <HStack spacing={4}>
                 <Box>
-                  <Link href="/register">Sign up</Link>
+                  <Link href="/register">SignUp</Link>
                 </Box>
                 <Box>
                   <Link href="/login">Login</Link>

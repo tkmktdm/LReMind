@@ -43,7 +43,7 @@ export default function LoginIndex() {
     const response = await signAction.postLogin(data);
 
     if (response.status == 200) {
-      console.log(response.data);      
+      console.log(response.data);
       // const user = response.data.user ?? "";
       // localStorage.setItem("user", JSON.stringify(user)); // JSON文字列化
       router.push("/");
@@ -56,7 +56,7 @@ export default function LoginIndex() {
   const handleClick = () => setShow(!show);
 
   return (
-    <Stack spacing={4} py="4rem" h="70vh">
+    <Stack spacing={4} py="4rem" px="2rem" h="70vh">
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormControl isInvalid={!!errors.email}>
           <FormLabel htmlFor="email">メールアドレス</FormLabel>

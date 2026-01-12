@@ -62,7 +62,9 @@ export async function getTasks(token: string) {
     },
   });
   if (!res.ok) {
-    throw new Error("タスクの取得に失敗しました");
+    // throw new Error("タスクの取得に失敗しました");
+    console.log("タスクが存在しません。")
+    // throw new Error("タスクの取得に失敗しました");
   }
   // console.log(res);
   if (res && res.ok) return res.json();

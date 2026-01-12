@@ -12,16 +12,24 @@ import dynamic from "next/dynamic";
 
 import Script from "next/script";
 import React from "react";
+import { UserProvider } from "./Context/UserContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
 async function fetchUser() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"; // 本番用URLを環境変数で設定
-  const response = await fetch(`${baseUrl}/api/login`, {
-    method: "POST",
-  });
-  console.log(response);
-  if (response && response.ok) return response.json();
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL; // 本番用URLを環境変数で設定
+  console.log(baseUrl);
+  // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"; // 本番用URLを環境変数で設定
+  try {
+    // const response = await fetch(`${baseUrl}/api/login`, {
+    const response = await fetch(`/api/login`, {
+      method: "POST",
+    });
+    console.log(response);
+  } catch ($e) {
+    console.error($e);
+  }
+  // if (response && response.ok) return response.json();
   return null;
 }
 
@@ -56,6 +64,7 @@ export default async function RootLayout({
       <body className={inter.className}>
         <Script src="/live2d.min.js" strategy="beforeInteractive" />
         <Providers>
+          {/* <UserProvider user={user}> */}
           <Container minW="100%" minH={"6vh"} px={0} bg="white">
             <Header user={user} />
           </Container>
@@ -75,6 +84,7 @@ export default async function RootLayout({
           <Container minW="100%" px={0} bg="white">
             <Footer />
           </Container>
+          {/* </UserProvider> */}
         </Providers>
       </body>
     </html>
