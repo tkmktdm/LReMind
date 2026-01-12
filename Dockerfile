@@ -10,4 +10,4 @@ RUN apt-get update \
     npm
 # ADD package.json /app/package.json
 ADD . /app
-# RUN npm install
+RUN npm install

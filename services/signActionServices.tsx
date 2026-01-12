@@ -24,7 +24,10 @@ export class signActionServer extends BasicService {
       console.log("csrfToken");
       console.log(this.csrfToken);
       if (!this.csrfToken) {
+        console.log("initCsrf system");
+        // ここでエラー
         await this.initCsrf();
+        console.log("initCsrf system end");
       }
       const url = `${process.env.NEXT_PUBLIC_LR_BACKEND_API}/api/register`;
       const headers = {
@@ -39,9 +42,11 @@ export class signActionServer extends BasicService {
         email: data.email,
         password: data.password,
       };
+
+      console.log("register start--------");
       const response = await this.setCsrf.post(url, body, { headers: headers });
-      // console.log("response--------");
-      // console.log(response);
+      console.log("response--------");
+      console.log(response);
 
       // registerが完了したらログインしてtokenを返し、TOPに遷移させる
       if (response.status == 201) {

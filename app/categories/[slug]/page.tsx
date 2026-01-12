@@ -4,7 +4,7 @@ import { Stack, VStack } from "@chakra-ui/react";
 import { ItemCardPage } from "@/components/ItemCardPage";
 import { BaseModalContent } from "@/app/@modal/_components/Modal";
 
-export default function ArticleShow() {
+export default function CategoryShow() {
   const ItemPickList = [];
   ItemPickList.push(<ItemCardPage key={1} />);
   return (

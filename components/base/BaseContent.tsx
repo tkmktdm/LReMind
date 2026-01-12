@@ -9,7 +9,7 @@ interface BaseContentProps {
 
 export const BaseContent = ({ children }: BaseContentProps) => {
   return (
-    <Stack p="2rem">
+    <Stack m="2rem">
       <VStack spacing={4}>{children}</VStack>
     </Stack>
   );
