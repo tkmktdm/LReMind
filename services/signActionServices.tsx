@@ -1,3 +1,4 @@
+// "use server";
 import axios from "axios";
 import { BasicService } from "@/services/BasicServices";
 import { cookies } from "next/dist/client/components/headers";
@@ -90,7 +91,23 @@ export class signActionServer extends BasicService {
       };
       const response = await this.setCsrf.post(url, body, { headers: headers });
       console.log("response--------");
-      console.log(response);
+      console.log(response.data);
+      const token = response.data.token;
+      // if (token) this.setAccessToken(token);
+
+      console.log("login nextjs------------");
+      const surl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/login`;
+      const sheaders = {
+        "Content-Type": "application/json",
+        "X-XSRF-TOKEN": this.csrfToken || "",
+      };
+      const sresponse = await this.setCsrf.post(surl, body, {
+        headers: sheaders,
+      });
+      console.log("getUser response--------");
+      console.log(sresponse.data);
+      const stoken = sresponse.data.token;
+      // if (token) this.setAccessToken(token);
 
       return response;
     } catch (error) {
@@ -129,4 +146,57 @@ export class signActionServer extends BasicService {
       throw error;
     }
   }
+
+  public async getUser() {
+    try {
+      if (!this.csrfToken) {
+        console.log("csrfToken");
+        await this.initCsrf();
+      }
+      console.log("getUserServer------------");
+      const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/user`;
+      // const url = `${process.env.NEXT_PUBLIC_LR_BACKEND_API}/api/user`;
+      const headers = {
+        "Content-Type": "application/json",
+        "X-XSRF-TOKEN": this.csrfToken || "",
+      };
+      const response = await this.setCsrf.get(url, { headers: headers });
+      console.log("getUser response--------");
+      console.log(response.data);
+      const token = response.data.token;
+      // if (token) this.setAccessToken(token);
+
+      return response;
+    } catch (error) {
+      console.log("error----------");
+      console.log(error);
+      throw error;
+    }
+  }
+  // public async post() {
+  //   try {
+  //     if (!this.csrfToken) {
+  //       console.log("csrfToken");
+  //       await this.initCsrf();
+  //     }
+  //     console.log("getUserServer------------");
+  //     const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/user`;
+  //     // const url = `${process.env.NEXT_PUBLIC_LR_BACKEND_API}/api/user`;
+  //     const headers = {
+  //       "Content-Type": "application/json",
+  //       "X-XSRF-TOKEN": this.csrfToken || "",
+  //     };
+  //     const response = await this.setCsrf.get(url, { headers: headers });
+  //     console.log("getUser response--------");
+  //     console.log(response.data);
+  //     const token = response.data.token;
+  //     // if (token) this.setAccessToken(token);
+
+  //     return response;
+  //   } catch (error) {
+  //     console.log("error----------");
+  //     console.log(error);
+  //     throw error;
+  //   }
+  // }
 }

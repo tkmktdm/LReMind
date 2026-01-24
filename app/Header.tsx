@@ -12,8 +12,17 @@ import {
   Portal,
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
+import { POST } from "./api/login/route";
 
 export default function Header({ user }: any) {
+  // if (!user) {
+  //   console.log("login before");
+  //   // const v = CACHE("user");
+  //   // console.log(v);
+  //   // console.log(getLoginUser);
+  // } else {
+  //   console.log("login after");
+  // }
   return (
     <header>
       <Box

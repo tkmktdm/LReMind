@@ -10,23 +10,25 @@ import Footer from "./Footer";
 import { Live2D } from "@/components/Live2D";
 import dynamic from "next/dynamic";
 
+import axios from "axios";
+import { signActionServer } from "@/services/signActionServices";
 import Script from "next/script";
 import React from "react";
 import { UserProvider } from "./Context/UserContext";
+import { cookies } from "next/headers";
 
 const inter = Inter({ subsets: ["latin"] });
 
 async function fetchUser() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL; // 本番用URLを環境変数で設定
-  console.log(baseUrl);
+  // // const baseUrl = "http://localhost:3000"; // 本番用URLを環境変数で設定
   // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"; // 本番用URLを環境変数で設定
   try {
-    // const response = await fetch(`${baseUrl}/api/login`, {
-    const response = await fetch(`/api/login`, {
-      method: "POST",
-    });
-    console.log(response);
+    const signAction = new signActionServer();
+    const user = signAction.getUser();
+    console.log("user------");
+    console.log(user);
   } catch ($e) {
+    console.log("error response------");
     console.error($e);
   }
   // if (response && response.ok) return response.json();
@@ -37,7 +39,7 @@ export const metadata: Metadata = {
   title: "LR Brother",
   description: "Liberuntime application",
 };
-// const user = await getUser();
+
 export default async function RootLayout({
   children,
   modal,

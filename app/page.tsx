@@ -39,6 +39,7 @@ import {
 } from "@chakra-ui/react";
 import { AddIcon, EditIcon } from "@chakra-ui/icons";
 import { useUser } from "./Context/UserContext";
+// import { GET } from "./api/login/route";
 
 export default function Home() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -55,9 +56,12 @@ export default function Home() {
   const [tasks, setTasks] = useState<any[]>([]);
   const user: any = useUser();
   console.log("user----");
-  console.log(user);
+  // console.log(user);
+  // console.log(GET("user"));
+
   // const token = "QFSeLBAQLuor5uHdp6pmxLR9eLgscSnzdTGAKYcp00c3584c";
   const token = "";
+
   const { data, isLoading, error } = useTasks(token || "");
   const sortTask = useSortTasks();
   const storeTask = useStoreTasks();

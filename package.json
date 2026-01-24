@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 11000",
+    "start": "next start -p 11000",
     "build": "next build",
-    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
@@ -28,6 +28,7 @@
     "framer-motion": "^11.9.0",
     "ioredis": "^5.5.0",
     "jotai": "^2.1.0",
+    "jsonwebtoken": "^9.0.3",
     "jsr": "^0.13.5",
     "next": "14.2.13",
     "nookies": "^2.5.2",
@@ -44,6 +45,7 @@
     "redux-persist": "^6.0.0"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
