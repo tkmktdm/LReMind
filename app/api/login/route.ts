@@ -1,51 +1,38 @@
-"use server";
-
-import { NextRequest, NextResponse } from "next/server";
-import Redis from "ioredis";
-import { signActionServer } from "@/services/signActionServices";
 import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: NextRequest): Promise<any> {
-  const redis = new Redis();
-  console.log("POST----- route.login");
+export async function POST(request: NextRequest) {
   try {
-    // redisのキャッシュから取得する
-    const cookieStore = cookies();
-    // console.log("getAll");
-    // console.log(cookieStore.getAll());
-    const auth_token = await cookieStore.get("auth_token")?.value;
-    // console.log("auth_token");
-    // console.log(auth_token);
-
-    if (auth_token) {
-      const user = await redis.get(auth_token);
-      //   console.log(`User from Redis: ${user}\n`);
-      return NextResponse.json(user);
+    const body = await request.json();
+    const res = await fetch(`${process.env.LR_BACKEND_API}/api/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+    console.log("routePost");
+    console.log(res);
+    if (!res.ok) {
+      return NextResponse.json(
+        { message: "login failed" },
+        { status: res.status }
+      );
     }
-    return null;
-    // // cookieにアクセストークンがない場合
-    // const signAction = new signActionServer();
-    // // Laravelへのリクエスト
-    // const response = await signAction.postLogin({
-    //   email: "test@example.com",
-    //   password: "password",
-    // });
-    // if (response.status !== 200 && !response && !response.data.user) {
-    //   throw new Error(`Login request failed with status: ${response.status}`);
-    // }
-    // return NextResponse.json(response.data.user);
-    // // const res = NextResponse.json(response.data.user);
-    // // const res = JSON.stringify(response.data.user);
-    // // return res;
-  } catch (error) {
-    console.error("Error occurred:", error);
-    return null;
+    const data = await res.json();
+    console.log("routePostData");
+    console.log(data);
 
-    // return NextResponse.json(
-    //   { error: "Internal Server Error" },
-    //   { status: 500 }
-    // );
-  } finally {
-    redis.quit();
+    // return data;
+    const response = NextResponse.json(data);
+    response.cookies.set("token", data.token, {
+      path: "/",
+      httpOnly: true,
+      sameSite: "lax",
+    });
+    return response;
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ message: "server error" }, { status: 500 });
   }
 }

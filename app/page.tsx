@@ -39,6 +39,7 @@ import {
 } from "@chakra-ui/react";
 import { AddIcon, EditIcon } from "@chakra-ui/icons";
 import { useUser } from "./Context/UserContext";
+// import { GET } from "./api/login/route";
 
 export default function Home() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -53,25 +54,25 @@ export default function Home() {
     })
   );
   const [tasks, setTasks] = useState<any[]>([]);
-  const user: any = useUser();
   console.log("user----");
-  console.log(user);
   // const token = "QFSeLBAQLuor5uHdp6pmxLR9eLgscSnzdTGAKYcp00c3584c";
   const token = "";
+
   const { data, isLoading, error } = useTasks(token || "");
   const sortTask = useSortTasks();
   const storeTask = useStoreTasks();
   const deleteTask = useDeleteTasks();
   // const user = fetchUser();
-  let isLogin = token ? true : false;
+  let isLogin = false;
+  // let isLogin = token ? true : false;
 
   // APIの結果を state に反映
-  useEffect(() => {
-    if (data) {
-      setTasks(data);
-    }
-    console.log(data);
-  }, [data]);
+  // useEffect(() => {
+  //   if (data) {
+  //     setTasks(data);
+  //   }
+  //   console.log(data);
+  // }, [data]);
   if (isLoading) return <p>タスク取得中...</p>;
   // if (error) return <p>エラーが発生しました</p>;
   const handleDragEnd = (event: DragEndEvent) => {

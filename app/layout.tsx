@@ -6,38 +6,21 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import { Box, Container } from "@chakra-ui/react";
 import Header from "./Header";
+import HeaderServer from "./HeaderServer";
+
 import Footer from "./Footer";
 import { Live2D } from "@/components/Live2D";
 import dynamic from "next/dynamic";
-
 import Script from "next/script";
 import React from "react";
-import { UserProvider } from "./Context/UserContext";
 
 const inter = Inter({ subsets: ["latin"] });
-
-async function fetchUser() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL; // 本番用URLを環境変数で設定
-  console.log(baseUrl);
-  // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"; // 本番用URLを環境変数で設定
-  try {
-    // const response = await fetch(`${baseUrl}/api/login`, {
-    const response = await fetch(`/api/login`, {
-      method: "POST",
-    });
-    console.log(response);
-  } catch ($e) {
-    console.error($e);
-  }
-  // if (response && response.ok) return response.json();
-  return null;
-}
 
 export const metadata: Metadata = {
   title: "LR Brother",
   description: "Liberuntime application",
 };
-// const user = await getUser();
+
 export default async function RootLayout({
   children,
   modal,
@@ -45,7 +28,6 @@ export default async function RootLayout({
   children: React.ReactNode;
   modal: React.ReactNode;
 }) {
-  const user = await fetchUser();
   // const Live2D = dynamic(
   //   () => import("@/components/Live2D").then((module) => module.Live2D),
   //   {
@@ -66,7 +48,7 @@ export default async function RootLayout({
         <Providers>
           {/* <UserProvider user={user}> */}
           <Container minW="100%" minH={"6vh"} px={0} bg="white">
-            <Header user={user} />
+            <HeaderServer />
           </Container>
 
           <Container minW="100%" minH="94vh" px={0} bg="white" color="black">
