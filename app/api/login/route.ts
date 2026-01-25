@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-
     const res = await fetch(`${process.env.LR_BACKEND_API}/api/login`, {
       method: "POST",
       headers: {
@@ -12,7 +11,6 @@ export async function POST(request: NextRequest) {
       },
       body: JSON.stringify(body),
     });
-
     console.log("routePost");
     console.log(res);
     if (!res.ok) {
@@ -21,7 +19,6 @@ export async function POST(request: NextRequest) {
         { status: res.status }
       );
     }
-
     const data = await res.json();
     console.log("routePostData");
     console.log(data);
@@ -33,24 +30,6 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       sameSite: "lax",
     });
-    // 必要なら cookie を Next.js 側で管理
-    // console.log("routeAccessToken");
-    // const cookieStore = cookies();
-    // await cookieStore.set({
-    //   name: "user",
-    //   value: data.user,
-    //   path: "/",
-    //   httpOnly: true,
-    //   sameSite: "lax",
-    // });
-    // await cookieStore.set({
-    //   name: "token",
-    //   value: data.token,
-    //   path: "/",
-    //   httpOnly: true,
-    //   sameSite: "lax",
-    // });
-
     return response;
   } catch (e) {
     console.error(e);

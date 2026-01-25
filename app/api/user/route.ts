@@ -1,39 +1,28 @@
 "use server";
 
-import { NextRequest, NextResponse } from "next/server";
-import Redis from "ioredis";
-import { signActionServer } from "@/services/signActionServices";
-import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
-export async function GET(text: String): Promise<any> {
-  const redis = new Redis();
-  console.log("GET----- route.user");
+export async function GET(token: String): Promise<any> {
   try {
-    // redisのキャッシュから取得する
-    console.log("1-----");
-    const cookieStore = cookies();
-    console.log("2-----");
-    const token = await cookieStore.get("token")?.value;
-    const authToken = await cookieStore.get("authToken")?.value;
-    console.log("3-----");
-    console.log(cookieStore.getAll());
-    console.log(token);
-    console.log(authToken);
-
-    if (!token) {
-      console.log("4-----");
-
-      // const user = await redis.get(auth_token);
-      //   console.log(`User from Redis: ${user}\n`);
-      console.log("5-----");
-      return NextResponse.json({});
+    const res = await fetch(`${process.env.LR_BACKEND_API}/api/setting/user`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      cache: "no-store", // ←重要
+    });
+    if (!res.ok) {
+      return NextResponse.json(
+        { message: "failed to fetch user" },
+        { status: res.status }
+      );
     }
-    console.log("6-----");
-    return NextResponse.json({ token });
+    const user = await res.json();
+    return NextResponse.json(user);
   } catch (error) {
-    console.error("Error occurred:", error);
-    return null;
-  } finally {
-    redis.quit();
+    console.error(error);
+    return NextResponse.json({ message: "server error" }, { status: 500 });
   }
 }

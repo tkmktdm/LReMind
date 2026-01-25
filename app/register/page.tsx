@@ -94,9 +94,13 @@ export default function RegisterIndex() {
             id="gender"
             {...register("gender", {
               // 後でバリデーション追加
-              required: "入力してください",
+              required: "数字で入力してください 例: 0=男性, 1=女性",
+              pattern: {
+                value: /^\d$/,
+                message: "数字で入力してください 例: 0=男性, 1=女性",
+              },
             })}
-            placeholder="性別を入力してください"
+            placeholder="0"
           />
           <Text color="red.500" fontSize="sm" minHeight="1.5rem">
             {errors.gender?.message || ""}
@@ -109,9 +113,9 @@ export default function RegisterIndex() {
             id="birthday"
             {...register("birthday", {
               // 後でバリデーション追加
-              required: "入力してください",
+              required: "入力してください 例: 1990-01-01",
             })}
-            placeholder="生年月日を入力してください"
+            placeholder="1990-01-01"
           />
           <Text color="red.500" fontSize="sm" minHeight="1.5rem">
             {errors.birthday?.message || ""}

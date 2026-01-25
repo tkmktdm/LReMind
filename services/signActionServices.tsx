@@ -2,6 +2,7 @@
 import axios from "axios";
 import { BasicService } from "@/services/BasicServices";
 import { cookies } from "next/dist/client/components/headers";
+import { NextResponse } from "next/server";
 // import { cookies } from "next/headers";
 
 export type registerUser = {
@@ -137,66 +138,55 @@ export class signActionServer extends BasicService {
       if (!this.csrfToken) {
         await this.initCsrf();
       }
-      const cookieStore = cookies();
-      const accessToken = cookieStore.get("accessToken");
-      return accessToken;
+      const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/token`;
+      const headers = {
+        "Content-Type": "application/json",
+        "X-XSRF-TOKEN": this.csrfToken || "",
+      };
+      const response = await this.setCsrf.get(url, { headers: headers });
+      console.log("getToken response--------");
+      console.log(response);
+      console.log(response.data);
+      const token = response.data.token;
+      return token;
     } catch (error) {
-      console.log("error----------");
-      console.log(error);
-      throw error;
+      console.error(error);
+      // throw error;
+      return null;
     }
   }
 
   public async getUser() {
     try {
-      if (!this.csrfToken) {
-        console.log("csrfToken");
-        await this.initCsrf();
-      }
+      // const getToken = await this.getAccessToken();
+      // const getToken = "49|hcbo10NPxqQ2AKYSa8Nq0UIA4pPVoiXttUVwYB6U89cc3091";
+      const getToken = undefined;
+
+      console.log("getToken-------");
+      console.log(getToken);
+      if (!getToken || getToken === undefined) return NextResponse.json({});
+
+      if (!this.csrfToken) await this.initCsrf();
       console.log("getUserServer------------");
+
       const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/user`;
       // const url = `${process.env.NEXT_PUBLIC_LR_BACKEND_API}/api/user`;
       const headers = {
         "Content-Type": "application/json",
         "X-XSRF-TOKEN": this.csrfToken || "",
       };
-      const response = await this.setCsrf.get(url, { headers: headers });
+      const response = await this.setCsrf.get(url, getToken, {
+        headers: headers,
+      });
       console.log("getUser response--------");
       console.log(response.data);
-      const token = response.data.token;
-      // if (token) this.setAccessToken(token);
 
       return response;
     } catch (error) {
       console.log("error----------");
       console.log(error);
-      throw error;
+      // throw error;
+      return error;
     }
   }
-  // public async post() {
-  //   try {
-  //     if (!this.csrfToken) {
-  //       console.log("csrfToken");
-  //       await this.initCsrf();
-  //     }
-  //     console.log("getUserServer------------");
-  //     const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/user`;
-  //     // const url = `${process.env.NEXT_PUBLIC_LR_BACKEND_API}/api/user`;
-  //     const headers = {
-  //       "Content-Type": "application/json",
-  //       "X-XSRF-TOKEN": this.csrfToken || "",
-  //     };
-  //     const response = await this.setCsrf.get(url, { headers: headers });
-  //     console.log("getUser response--------");
-  //     console.log(response.data);
-  //     const token = response.data.token;
-  //     // if (token) this.setAccessToken(token);
-
-  //     return response;
-  //   } catch (error) {
-  //     console.log("error----------");
-  //     console.log(error);
-  //     throw error;
-  //   }
-  // }
 }

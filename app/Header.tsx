@@ -1,3 +1,4 @@
+// "use server";
 "use client";
 
 import { Box, Stack, HStack } from "@chakra-ui/layout";
@@ -12,17 +13,33 @@ import {
   Portal,
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import { POST } from "./api/login/route";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
-export default function Header({ user }: any) {
-  // if (!user) {
-  //   console.log("login before");
-  //   // const v = CACHE("user");
-  //   // console.log(v);
-  //   // console.log(getLoginUser);
-  // } else {
-  //   console.log("login after");
-  // }
+type Props = {
+  user: {
+    id: number;
+    name: string;
+    // email: string;
+  } | null;
+};
+
+export default function Header({ user }: Props) {
+  const router = useRouter();
+  const handleLogout = async () => {
+    try {
+      const res = await axios.post("/api/logout"); // ← Server に投げるだけ
+      console.log("logout------res");
+      console.log(res);
+      if (res.data.ok) {
+        router.push("/");
+        router.refresh(); // ← これ超重要！！
+      }
+    } catch (e) {
+      console.error("logout failed", e);
+    }
+  };
+
   return (
     <header>
       <Box
@@ -53,16 +70,17 @@ export default function Header({ user }: any) {
             <Box position={"fixed"} right={0}>
               <Menu>
                 <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                  <p>{user.name}</p>
+                  <p>{user?.name}</p>
                 </MenuButton>
                 <Portal>
                   <MenuList px={4}>
                     <MenuItem color={"black"}>
                       <Link href="/profile">プロフィール</Link>
                     </MenuItem>
-                    <MenuItem color={"black"}>
+                    <MenuItem onClick={handleLogout}>ログアウト</MenuItem>
+                    {/* <MenuItem color={"black"}>
                       <Link href="/logout">ログアウト</Link>
-                    </MenuItem>
+                    </MenuItem> */}
                   </MenuList>
                 </Portal>
               </Menu>

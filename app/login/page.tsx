@@ -47,6 +47,7 @@ export default function LoginIndex() {
       // const user = response.data.user ?? "";
       // localStorage.setItem("user", JSON.stringify(user)); // JSON文字列化
       router.push("/");
+      router.refresh(); // ← これ！！！！！
     } else {
       console.log(response);
     }
