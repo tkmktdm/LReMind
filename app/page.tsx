@@ -8,7 +8,7 @@ export default async function Page() {
   const token = cookieStore.get("token")?.value;
 
   if (!token) {
-    return <PageClient user={null} categories={[]} tasks={[]} />;
+    return <PageClient user={null} categoryData={[]} taskData={[]} />;
   }
 
   // 並列取得
@@ -31,5 +31,12 @@ export default async function Page() {
   const categories = await categoryRes.json();
   const tasks = await taskRes.json();
 
-  return <PageClient user={user} categories={categories} tasks={tasks} />;
+  return (
+    <PageClient
+      user={user}
+      categoryData={categories}
+      taskData={tasks}
+      token={token}
+    />
+  );
 }

@@ -22,7 +22,9 @@ import { Task } from "@/components/TaskCardBase";
 //   return res.json();
 // }
 export async function setToken() {
-  const token = "N5q2I9ces6GDopm12ODLVHoHCygb8tNfhgHeKjVA7df2e86e";
+  const cookieStore = cookies();
+  const token = cookieStore.get("token")?.value;
+  // const token = "N5q2I9ces6GDopm12ODLVHoHCygb8tNfhgHeKjVA7df2e86e";
   return token;
 }
 
@@ -54,7 +56,8 @@ export async function getTasks(token: string) {
   // const id = user.id;
   // const token = user.auth_token;
 
-  const url = `${process.env.NEXT_PUBLIC_LR_BACKEND_API}`;
+  // const url = `${process.env.NEXT_PUBLIC_LR_BACKEND_API}`;
+  const url = `${process.env.LR_BACKEND_API}`;
   const res = await fetch(`${url}/api/tasks`, {
     method: "GET",
     headers: {
@@ -63,7 +66,7 @@ export async function getTasks(token: string) {
   });
   if (!res.ok) {
     // throw new Error("タスクの取得に失敗しました");
-    console.log("タスクが存在しません。")
+    console.log("タスクが存在しません。");
     // throw new Error("タスクの取得に失敗しました");
   }
   // console.log(res);
@@ -94,9 +97,10 @@ export async function sortTasks(id: string) {
 export async function storeTasks(data: Task) {
   console.log("data-------");
   console.log(data);
-  // const token = setToken();
-  const token = "N5q2I9ces6GDopm12ODLVHoHCygb8tNfhgHeKjVA7df2e86e";
-  const url = `${process.env.NEXT_PUBLIC_LR_BACKEND_API}`;
+  const token = setToken();
+  // const token = "N5q2I9ces6GDopm12ODLVHoHCygb8tNfhgHeKjVA7df2e86e";
+  // const url = `${process.env.NEXT_PUBLIC_LR_BACKEND_API}`;
+  const url = `${process.env.LR_BACKEND_API}`;
   const res = await fetch(`${url}/api/tasks`, {
     method: "POST",
     headers: {
@@ -106,7 +110,7 @@ export async function storeTasks(data: Task) {
     body: JSON.stringify({
       title: data.title,
       notes: data.notes,
-      user_id: 1,
+      user_id: data.user_id,
       isComplete: false,
     }),
   });
@@ -120,7 +124,8 @@ export async function updateTasks(data: Task) {
   console.log(data);
   // const token = setToken();
   const token = "N5q2I9ces6GDopm12ODLVHoHCygb8tNfhgHeKjVA7df2e86e";
-  const url = `${process.env.NEXT_PUBLIC_LR_BACKEND_API}`;
+  // const url = `${process.env.NEXT_PUBLIC_LR_BACKEND_API}`;
+  const url = `${process.env.LR_BACKEND_API}`;
   const res = await fetch(`${url}/api/tasks/${data.id}`, {
     method: "POST",
     headers: {
@@ -143,7 +148,8 @@ export async function deleteTasks(id: string) {
   console.log(id);
   // const token = setToken();
   const token = "N5q2I9ces6GDopm12ODLVHoHCygb8tNfhgHeKjVA7df2e86e";
-  const url = `${process.env.NEXT_PUBLIC_LR_BACKEND_API}`;
+  // const url = `${process.env.NEXT_PUBLIC_LR_BACKEND_API}`;
+  const url = `${process.env.LR_BACKEND_API}`;
   const res = await fetch(`${url}/api/tasks/${id}`, {
     method: "DELETE",
     headers: {

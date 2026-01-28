@@ -29,6 +29,8 @@ export type Task = {
   id: number;
   title: string;
   notes: string;
+  token?: string;
+  userId?: number;
 };
 
 type Props = {
