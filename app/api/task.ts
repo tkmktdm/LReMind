@@ -22,9 +22,9 @@ import { Task } from "@/components/TaskCardBase";
 //   return res.json();
 // }
 export async function setToken() {
-  axios.defaults.withCredentials = true;
-  axios.defaults.xsrfCookieName = "XSRF-TOKEN";
-  axios.defaults.xsrfHeaderName = "X-XSRF-TOKEN";
+  // axios.defaults.withCredentials = true;
+  // axios.defaults.xsrfCookieName = "XSRF-TOKEN";
+  // axios.defaults.xsrfHeaderName = "X-XSRF-TOKEN";
 
   const cookieStore = cookies();
   const token = cookieStore.get("token")?.value;
