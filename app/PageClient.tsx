@@ -64,6 +64,8 @@ export default function PageClient({
   const [createTitle, setCreateTitle] = useState("");
   const [createNotes, setCreateNotes] = useState("");
 
+  console.log(createTitle);
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
