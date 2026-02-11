@@ -39,17 +39,17 @@ export default function LoginIndex() {
   } = useForm<FormInputs>();
 
   const onSubmit = async (data: FormInputs) => {
-    const signAction = new signActionServer();
-    const response = await signAction.postLogin(data);
-
-    if (response.status == 200) {
-      console.log(response.data);
-      // const user = response.data.user ?? "";
-      // localStorage.setItem("user", JSON.stringify(user)); // JSON文字列化
+    const [login] = await Promise.all([
+      fetch(`/api/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        cache: "no-store",
+        body: JSON.stringify(data),
+      }),
+    ]);
+    if (login.status === 200) {
       router.push("/");
-      router.refresh(); // ← これ！！！！！
-    } else {
-      console.log(response);
+      router.refresh(); // ← これ超重要！！
     }
   };
 
