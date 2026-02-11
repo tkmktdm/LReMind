@@ -19,6 +19,7 @@ import React from "react";
 import { ItemList } from "@/components/ItemList";
 import { signActionServer } from "@/services/signActionServices";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 // フォームで使用する変数の型を定義
 type FormInputs = {
@@ -43,12 +44,20 @@ export default function RegisterIndex() {
     formState: { errors, isSubmitting },
   } = useForm<FormInputs>();
   const onSubmit = async (data: FormInputs) => {
-    const signAction = new signActionServer();
-    const response = await signAction.postRegister(data);
-    console.log("RegisterIndexPage--------");
-    console.log(response);
-    if (response.status == 200 && response.data) {
+    // 並列取得
+    const [register] = await Promise.all([
+      fetch(`/api/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        cache: "no-store",
+        body: JSON.stringify(data),
+      }),
+    ]);
+    const res = await register.json();
+    console.log(register);
+    if (register.status === 200) {
       router.push("/");
+      router.refresh(); // ← これ超重要！！
     }
   };
 
