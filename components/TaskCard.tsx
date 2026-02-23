@@ -132,7 +132,6 @@ export const TaskCard = ({ id, url, task }: Props) => {
                   mb={3}
                 />
                 <Button onClick={isSubmit} zIndex={100} m="0.5rem">
-                  {/* <Button type="submit" zIndex={100} m="0.5rem"> */}
                   送信
                 </Button>
               </ModalBody>

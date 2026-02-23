@@ -6,6 +6,7 @@ services:
     build: .
     volumes:
       - ./:/app
+      - /app/node_modules
     ports:
       - 11000:11000
     restart: always

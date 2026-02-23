@@ -23,6 +23,11 @@ export class BasicService {
       // TODO: redisに変更したので修正
       // CSRFのクッキーを取得
       await this.setCsrf.get(`/sanctum/csrf-cookie`);
+      //await this.setCsrf.get(`/sanctum/csrf-cookie`);
+      const resCsrf = await this.setCsrf.get(
+        `http://localhost:12101/sanctum/csrf-cookie`,
+      );
+      console.log(resCsrf);
       const csrfCookie = document.cookie
         .split("; ")
         .find((row) => row.startsWith("XSRF-TOKEN="));

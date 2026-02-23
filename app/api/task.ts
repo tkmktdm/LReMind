@@ -104,7 +104,7 @@ export async function sortTasks(id: string) {
 export async function storeTasks(data: Task) {
   console.log("data-------");
   console.log(data);
-  const token = setToken();
+  const token = await setToken();
   const url = `${process.env.LR_BACKEND_API}`;
   const res = await fetch(`${url}/api/tasks`, {
     method: "POST",
@@ -128,7 +128,7 @@ export async function storeTasks(data: Task) {
 export async function updateTasks(data: Task) {
   console.log("data-------");
   console.log(data);
-  const token = setToken();
+  const token = await setToken();
   const url = `${process.env.LR_BACKEND_API}`;
   const res = await fetch(`${url}/api/tasks/${data.id}`, {
     method: "POST",

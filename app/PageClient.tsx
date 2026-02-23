@@ -78,7 +78,6 @@ export default function PageClient({
   console.log(user);
   console.log(token);
   // const token = "QFSeLBAQLuor5uHdp6pmxLR9eLgscSnzdTGAKYcp00c3584c";
-  // const token = "";
 
   const { data, isLoading, error } = useTasks(token || "");
   const sortTask = useSortTasks();
