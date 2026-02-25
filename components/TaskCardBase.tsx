@@ -31,6 +31,7 @@ export type Task = {
   title: string;
   notes: string;
   user_id?: number;
+  category_id?: number;
 };
 
 type Props = {

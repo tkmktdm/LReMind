@@ -117,6 +117,7 @@ export async function storeTasks(data: Task) {
       title: data.title,
       notes: data.notes,
       user_id: data.user_id,
+      category_id: data.category_id,
       isComplete: false,
     }),
   });
@@ -131,7 +132,7 @@ export async function updateTasks(data: Task) {
   const token = await setToken();
   const url = `${process.env.LR_BACKEND_API}`;
   const res = await fetch(`${url}/api/tasks/${data.id}`, {
-    method: "POST",
+    method: "PATCH",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
@@ -141,6 +142,7 @@ export async function updateTasks(data: Task) {
       id: data.id,
       title: data.title,
       notes: data.notes,
+      category_id: data.category_id,
     }),
   });
   if (res && res.ok) return res.json();
