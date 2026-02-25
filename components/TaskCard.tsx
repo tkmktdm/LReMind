@@ -18,41 +18,57 @@ import {
   ModalHeader,
   ModalCloseButton,
   ModalBody,
+  Select,
 } from "@chakra-ui/react";
 import { EditIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 import axios from "axios";
 import { useStoreTasks, useUpdateTasks } from "@/hooks/useTasks";
 import { storeTasks } from "@/app/api/task";
+import { Category } from "@/types/Category";
 
 export type Task = {
   id: number;
   title: string;
   notes: string;
   token?: string;
-  userId?: number;
+  user_id?: number;
+  category_id?: number;
 };
 
 type Props = {
   id: number;
   url: string;
   task: Task;
+  category: Category | null;
+  categories: Category[];
 };
 
-export const TaskCard = ({ id, url, task }: Props) => {
+export const TaskCard = ({ id, url, task, category, categories }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [editTitle, setEditTitle] = useState(task ? task.title : "");
   const [editNotes, setEditNotes] = useState(task ? task.notes : "");
+  const [editCategoryId, setEditCategoryId] = useState(
+    task ? task.category_id : null,
+  );
   const updateTask = useUpdateTasks();
   const storeTask = useStoreTasks();
-  // console.log(task);
+  console.log("TaskCard------");
+  console.log(task);
+  console.log(category);
+  console.log("TaskCard end------");
 
   const MagicLink = chakra<typeof NextLink, NextLinkProps>(NextLink, {
     shouldForwardProp: (prop) => ["href", "target", "children"].includes(prop),
   });
   const isSubmit = async () => {
     updateTask.mutate(
-      { id: task.id, title: editTitle, notes: editNotes } as Task,
+      {
+        id: task.id,
+        title: editTitle,
+        notes: editNotes,
+        category_id: editCategoryId,
+      } as Task,
       {
         onSuccess: (res) => {
           console.log(res);
@@ -63,7 +79,7 @@ export const TaskCard = ({ id, url, task }: Props) => {
           console.error("通信失敗: ", err);
           alert("送信できませんでした");
         },
-      }
+      },
     );
   };
   // const isSubmit = async () => {
@@ -89,6 +105,7 @@ export const TaskCard = ({ id, url, task }: Props) => {
       <CardBody p="0">
         <HStack>
           <VStack w="100%" p="0.5rem" alignItems="flex-start">
+            <Text p="5px">{category?.name}</Text>
             <Heading p="0.5rem" size="md">
               {id}: {task.title}
             </Heading>
@@ -117,6 +134,20 @@ export const TaskCard = ({ id, url, task }: Props) => {
               <ModalHeader>タスク名の入力</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
+                <Text>カテゴリー</Text>
+                <Select
+                  placeholder="カテゴリー"
+                  value={Number(editCategoryId)}
+                  onChange={(e) => setEditCategoryId(Number(e.target.value))}
+                >
+                  {categories.map((category: Category) => {
+                    return (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    );
+                  })}
+                </Select>
                 <Text>タイトル</Text>
                 <Input
                   value={editTitle}

@@ -1,6 +1,6 @@
 "use client";
 
-import { Category as CategoryType } from "@/types/Category";
+import { Category, Category as CategoryType } from "@/types/Category";
 import { Task as TaskType } from "@/types/Task";
 import { User } from "@/types/User";
 import KanbanBoard from "../components/kanban/KanbanBoard";
@@ -38,11 +38,17 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Select,
   Stack,
   Text,
-  useDisclosure,
 } from "@chakra-ui/react";
 import { AddIcon, EditIcon } from "@chakra-ui/icons";
+import {
+  useCategories,
+  useDeleteCategories,
+  useSortCategories,
+  useStoreCategories,
+} from "@/hooks/useCategories";
 
 type Props = {
   user: User | null;
@@ -60,29 +66,51 @@ export default function PageClient({
   token,
 }: Props) {
   // export default function PageClient({ user, categories, tasks }: Props) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  type ModalType = "task" | "category" | null;
+  const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const onOpen = (type: ModalType) => setActiveModal(type);
+  const onClose = () => setActiveModal(null);
+  const isOpen = (type: ModalType) => activeModal === type;
+  // task
   const [createTitle, setCreateTitle] = useState("");
   const [createNotes, setCreateNotes] = useState("");
+  const [createCategoryId, setCreateCategoryId] = useState(Number() || null);
+  // category
+  const [createName, setCreateName] = useState("");
 
   console.log(createTitle);
+  console.log(createName);
+  console.log(createCategoryId);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
         distance: 5,
       },
-    })
+    }),
   );
   const [tasks, setTasks] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   console.log("user----");
   console.log(user);
   console.log(token);
-  // const token = "QFSeLBAQLuor5uHdp6pmxLR9eLgscSnzdTGAKYcp00c3584c";
+  console.log("categories-----");
+  // console.log(categories[0]);
+  console.log(categories.find((category) => category.id === 14));
 
   const { data, isLoading, error } = useTasks(token || "");
   const sortTask = useSortTasks();
   const storeTask = useStoreTasks();
   const deleteTask = useDeleteTasks();
+
+  const {
+    data: dataCategory,
+    isLoading: isLoadingCategory,
+    error: errorCategory,
+  } = useCategories(token || "");
+  const sortCategory = useSortCategories();
+  const storeCategory = useStoreCategories();
+  const deleteCategory = useDeleteCategories();
   // let isLogin = false;
   let isLogin = user ? true : false;
 
@@ -93,6 +121,13 @@ export default function PageClient({
     }
     console.log(data);
   }, [data]);
+  useEffect(() => {
+    if (dataCategory) {
+      setCategories(dataCategory);
+    }
+    console.log(dataCategory);
+  }, [dataCategory]);
+
   if (isLoading) return <p>タスク取得中...</p>;
   // if (error) return <p>エラーが発生しました</p>;
   const handleDragEnd = (event: DragEndEvent) => {
@@ -111,25 +146,45 @@ export default function PageClient({
     setTasks((prev) => prev.filter((taskId) => taskId !== id));
   };
 
-  const isSubmit = async () => {
-    storeTask.mutate(
-      {
-        title: createTitle,
-        notes: createNotes,
-        token: token,
-        userId: user?.id,
-      } as Task,
-      {
-        onSuccess: () => {
-          console.log("作成成功");
-          onClose();
+  const isSubmit = async (type: string) => {
+    if (type === "task") {
+      storeTask.mutate(
+        {
+          title: createTitle,
+          notes: createNotes,
+          token: token,
+          user_id: user?.id,
+          category_id: createCategoryId,
+        } as Task,
+        {
+          onSuccess: () => {
+            console.log("作成成功");
+            onClose();
+          },
+          onError: (err) => {
+            console.error("通信失敗: ", err);
+            alert("送信できませんでした");
+          },
         },
-        onError: (err) => {
-          console.error("通信失敗: ", err);
-          alert("送信できませんでした");
+      );
+    } else if (type === "category") {
+      storeCategory.mutate(
+        {
+          name: createName,
+          user_id: user?.id,
+        } as Category,
+        {
+          onSuccess: () => {
+            console.log("作成成功");
+            onClose();
+          },
+          onError: (err) => {
+            console.error("通信失敗: ", err);
+            alert("送信できませんでした");
+          },
         },
-      }
-    );
+      );
+    }
   };
 
   return (
@@ -161,6 +216,10 @@ export default function PageClient({
                       id={task.id}
                       url={`tasks/${task.id}`}
                       task={task}
+                      category={categories.find(
+                        (category) => category.id === task.category_id,
+                      )}
+                      categories={categories}
                     />
                   </SwipeableTask>
                 </SortableItem>
@@ -168,16 +227,30 @@ export default function PageClient({
             </SortableContext>
           </DndContext>
 
-          <Button onClick={onOpen} zIndex={100} m="0.5rem">
+          <Button onClick={() => onOpen("task")} zIndex={100} m="0.5rem">
             <AddIcon />
           </Button>
           {/* 編集モーダル */}
-          <Modal isOpen={isOpen} onClose={onClose} motionPreset="none">
+          <Modal isOpen={isOpen("task")} onClose={onClose} motionPreset="none">
             <ModalOverlay />
             <ModalContent w="100%" color={"black"}>
               <ModalHeader>タスク名の入力</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
+                <Text>カテゴリー</Text>
+                <Select
+                  placeholder="カテゴリー"
+                  value={Number(createCategoryId)}
+                  onChange={(e) => setCreateCategoryId(Number(e.target.value))}
+                >
+                  {categories.map((category: Category) => {
+                    return (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    );
+                  })}
+                </Select>
                 <Text>タイトル</Text>
                 <Input
                   value={createTitle}
@@ -192,7 +265,46 @@ export default function PageClient({
                   placeholder="備考"
                   mb={3}
                 />
-                <Button onClick={isSubmit} zIndex={100} m="0.5rem">
+                <Button
+                  onClick={() => isSubmit("task")}
+                  zIndex={100}
+                  m="0.5rem"
+                >
+                  {/* <Button onClick={isSubmit} zIndex={100} m="0.5rem"> */}
+                  送信
+                </Button>
+              </ModalBody>
+              {/* </form> */}
+            </ModalContent>
+          </Modal>
+
+          <Button onClick={() => onOpen("category")} zIndex={100} m="0.5rem">
+            <AddIcon />
+          </Button>
+          {/* カテゴリモーダル */}
+          <Modal
+            isOpen={isOpen("category")}
+            onClose={onClose}
+            motionPreset="none"
+          >
+            <ModalOverlay />
+            <ModalContent w="100%" color={"black"}>
+              <ModalHeader>カテゴリー名の入力</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <Text>カテゴリー</Text>
+                <Input
+                  value={createName}
+                  onChange={(e) => setCreateName(e.target.value)}
+                  placeholder="タイトル"
+                  mb={3}
+                />
+                <Button
+                  onClick={() => isSubmit("category")}
+                  zIndex={100}
+                  m="0.5rem"
+                >
+                  {/* <Button onClick={isSubmitCategory} zIndex={100} m="0.5rem"> */}
                   送信
                 </Button>
               </ModalBody>
