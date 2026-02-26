@@ -14,7 +14,7 @@ export function useSortTasks() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => sortTasks(id),
+    mutationFn: (taskIds: number[]) => sortTasks(taskIds),
     onSuccess: () => {
       // 成功したら tasks をリフレッシュ
       queryClient.invalidateQueries({ queryKey: ["tasks"] });

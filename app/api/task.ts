@@ -81,24 +81,21 @@ export async function getTasks(token: string) {
  * @param id
  * @returns
  */
-export async function sortTasks(id: string) {
+export async function sortTasks(taskIds: number[]) {
   const token = await setToken();
   const url = `${process.env.LR_BACKEND_API}`;
-  const res = await fetch(`${url}/api/tasks/${id}`, {
+  const res = await fetch(`${url}/api/tasks/reorder`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({
-      id: id,
-    }),
+    body: JSON.stringify({ task_ids: taskIds }),
   });
   if (res && res.ok) return await res.json();
-  if (!res.ok) console.error("タスクの更新に失敗しました");
-  return new Response("Request body already used", { status: 400 });
-  //   return { id: 1, name: "Test User" }; // 実際はDB接続などサーバー側処理を書く
+  if (!res.ok) console.error("タスクの並び替えに失敗しました");
+  return null;
 }
 
 export async function storeTasks(data: Task) {
@@ -118,6 +115,9 @@ export async function storeTasks(data: Task) {
       notes: data.notes,
       user_id: data.user_id,
       category_id: data.category_id,
+      start_date: data.start_date,
+      end_date: data.end_date,
+      target_date: data.target_date,
       isComplete: false,
     }),
   });
@@ -143,6 +143,9 @@ export async function updateTasks(data: Task) {
       title: data.title,
       notes: data.notes,
       category_id: data.category_id,
+      start_date: data.start_date,
+      end_date: data.end_date,
+      target_date: data.target_date,
     }),
   });
   if (res && res.ok) return res.json();
