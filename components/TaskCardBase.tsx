@@ -32,6 +32,9 @@ export type Task = {
   notes: string;
   user_id?: number;
   category_id?: number;
+  start_date?: string;
+  end_date?: string;
+  target_date?: string;
 };
 
 type Props = {

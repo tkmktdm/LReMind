@@ -133,12 +133,11 @@ export default function PageClient({
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (over && active.id !== over.id) {
-      setTasks((items) => {
-        const oldIndex = items.indexOf(active.id as number);
-        const newIndex = items.indexOf(over.id as number);
-        sortTask.mutate(active.id as string); // タスクを更新
-        return arrayMove(items, oldIndex, newIndex);
-      });
+      const oldIndex = tasks.findIndex((t) => t.id === active.id);
+      const newIndex = tasks.findIndex((t) => t.id === over.id);
+      const newItems = arrayMove(tasks, oldIndex, newIndex);
+      setTasks(newItems);
+      sortTask.mutate(newItems.map((t) => Number(t.id)));
     }
   };
   const handleDelete = (id: string) => {
@@ -206,7 +205,7 @@ export default function PageClient({
             onDragEnd={handleDragEnd}
           >
             <SortableContext
-              items={tasks}
+              items={tasks.map((t) => t.id)}
               strategy={verticalListSortingStrategy}
             >
               {tasks.map((task) => (
