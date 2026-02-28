@@ -75,6 +75,9 @@ export default function PageClient({
   const [createTitle, setCreateTitle] = useState("");
   const [createNotes, setCreateNotes] = useState("");
   const [createCategoryId, setCreateCategoryId] = useState(Number() || null);
+  const [createStartDate, setCreateStartDate] = useState("");
+  const [createEndDate, setCreateEndDate] = useState("");
+  const [createTargetDate, setCreateTargetDate] = useState("");
   // category
   const [createName, setCreateName] = useState("");
 
@@ -154,6 +157,9 @@ export default function PageClient({
           token: token,
           user_id: user?.id,
           category_id: createCategoryId,
+          start_date: createStartDate || undefined,
+          end_date: createEndDate || undefined,
+          target_date: createTargetDate || undefined,
         } as Task,
         {
           onSuccess: () => {
@@ -262,6 +268,27 @@ export default function PageClient({
                   value={createNotes}
                   onChange={(e) => setCreateNotes(e.target.value)}
                   placeholder="備考"
+                  mb={3}
+                />
+                <Text>開始日</Text>
+                <Input
+                  type="datetime-local"
+                  value={createStartDate}
+                  onChange={(e) => setCreateStartDate(e.target.value)}
+                  mb={3}
+                />
+                <Text>期限日</Text>
+                <Input
+                  type="datetime-local"
+                  value={createEndDate}
+                  onChange={(e) => setCreateEndDate(e.target.value)}
+                  mb={3}
+                />
+                <Text>完了日</Text>
+                <Input
+                  type="datetime-local"
+                  value={createTargetDate}
+                  onChange={(e) => setCreateTargetDate(e.target.value)}
                   mb={3}
                 />
                 <Button

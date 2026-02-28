@@ -77,7 +77,9 @@ export default function Header({ user }: Props) {
                     <MenuItem color={"black"}>
                       <Link href="/profile">プロフィール</Link>
                     </MenuItem>
-                    <MenuItem onClick={handleLogout}>ログアウト</MenuItem>
+                    <MenuItem color={"black"} onClick={handleLogout}>
+                      ログアウト
+                    </MenuItem>
                     {/* <MenuItem color={"black"}>
                       <Link href="/logout">ログアウト</Link>
                     </MenuItem> */}
