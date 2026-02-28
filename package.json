@@ -26,6 +26,7 @@
     "add": "^2.0.6",
     "axios": "^1.7.9",
     "framer-motion": "^11.9.0",
+    "frappe-gantt": "^1.2.2",
     "ioredis": "^5.5.0",
     "jotai": "^2.1.0",
     "jsonwebtoken": "^9.0.3",

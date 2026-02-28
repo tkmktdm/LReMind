@@ -54,6 +54,9 @@ export const TaskCard = ({ id, url, task, category, categories }: Props) => {
   const [editCategoryId, setEditCategoryId] = useState(
     task ? task.category_id : null,
   );
+  const [editStartDate, setEditStartDate] = useState(task?.start_date ?? "");
+  const [editEndDate, setEditEndDate] = useState(task?.end_date ?? "");
+  const [editTargetDate, setEditTargetDate] = useState(task?.target_date ?? "");
   const updateTask = useUpdateTasks();
   const storeTask = useStoreTasks();
   console.log("TaskCard------");
@@ -71,6 +74,9 @@ export const TaskCard = ({ id, url, task, category, categories }: Props) => {
         title: editTitle,
         notes: editNotes,
         category_id: editCategoryId,
+        start_date: editStartDate || undefined,
+        end_date: editEndDate || undefined,
+        target_date: editTargetDate || undefined,
       } as Task,
       {
         onSuccess: (res) => {
@@ -163,6 +169,27 @@ export const TaskCard = ({ id, url, task, category, categories }: Props) => {
                   value={editNotes}
                   onChange={(e) => setEditNotes(e.target.value)}
                   placeholder="備考"
+                  mb={3}
+                />
+                <Text>開始日</Text>
+                <Input
+                  type="datetime-local"
+                  value={editStartDate}
+                  onChange={(e) => setEditStartDate(e.target.value)}
+                  mb={3}
+                />
+                <Text>期限日</Text>
+                <Input
+                  type="datetime-local"
+                  value={editEndDate}
+                  onChange={(e) => setEditEndDate(e.target.value)}
+                  mb={3}
+                />
+                <Text>完了日</Text>
+                <Input
+                  type="datetime-local"
+                  value={editTargetDate}
+                  onChange={(e) => setEditTargetDate(e.target.value)}
                   mb={3}
                 />
                 <Button onClick={isSubmit} zIndex={100} m="0.5rem">
