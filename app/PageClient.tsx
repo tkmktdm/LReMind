@@ -49,6 +49,7 @@ import {
   useSortCategories,
   useStoreCategories,
 } from "@/hooks/useCategories";
+import Gantt from "@/components/frappe/gantt";
 
 type Props = {
   user: User | null;
@@ -204,6 +205,8 @@ export default function PageClient({
       ) : (
         <>
           <Text>Chat</Text>
+          {tasks && <Gantt taskData={tasks} />}
+          {/* <Gantt taskData={tasks} /> */}
           {/* TODO: live2dの画像を小さく、裏のタスクリストを選択できるようにしたい */}
           <DndContext
             sensors={sensors}

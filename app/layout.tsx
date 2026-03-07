@@ -41,6 +41,11 @@ export default async function RootLayout({
       <head>
         <script src="/live2d.min.js" defer></script>
         <script src="/live2dcubismcore.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/frappe-gantt/dist/frappe-gantt.umd.js"></script>
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/frappe-gantt/dist/frappe-gantt.css"
+        />
       </head>
 
       <body className={inter.className}>
