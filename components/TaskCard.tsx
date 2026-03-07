@@ -26,6 +26,8 @@ import axios from "axios";
 import { useStoreTasks, useUpdateTasks } from "@/hooks/useTasks";
 import { storeTasks } from "@/app/api/task";
 import { Category } from "@/types/Category";
+import { DateTime, Settings, Info, Duration } from "luxon";
+import moment from "moment";
 
 export type Task = {
   id: number;
@@ -34,6 +36,9 @@ export type Task = {
   token?: string;
   user_id?: number;
   category_id?: number;
+  // start_date?: DateTime;
+  // end_date?: DateTime;
+  // target_date?: DateTime;
   start_date?: string;
   end_date?: string;
   target_date?: string;
@@ -54,9 +59,16 @@ export const TaskCard = ({ id, url, task, category, categories }: Props) => {
   const [editCategoryId, setEditCategoryId] = useState(
     task ? task.category_id : null,
   );
-  const [editStartDate, setEditStartDate] = useState(task?.start_date ?? "");
-  const [editEndDate, setEditEndDate] = useState(task?.end_date ?? "");
-  const [editTargetDate, setEditTargetDate] = useState(task?.target_date ?? "");
+
+  const [editStartDate, setEditStartDate] = useState(
+    task ? moment(task?.start_date).local().format("YYYY-MM-DDTHH:mm") : "",
+  );
+  const [editEndDate, setEditEndDate] = useState(
+    task ? moment(task?.end_date).local().format("YYYY-MM-DDTHH:mm") : "",
+  );
+  const [editTargetDate, setEditTargetDate] = useState(
+    task ? moment(task?.target_date).local().format("YYYY-MM-DDTHH:mm") : "",
+  );
   const updateTask = useUpdateTasks();
   const storeTask = useStoreTasks();
   console.log("TaskCard------");
@@ -68,15 +80,46 @@ export const TaskCard = ({ id, url, task, category, categories }: Props) => {
     shouldForwardProp: (prop) => ["href", "target", "children"].includes(prop),
   });
   const isSubmit = async () => {
+    console.log(editStartDate);
+    console.log(moment(editStartDate).format("YYYY-MM-DDTHH:mm"));
+    console.log(editEndDate);
+    console.log(moment(editEndDate).format("YYYY-MM-DDTHH:mm"));
+    console.log(editTargetDate);
+    console.log(moment(editTargetDate).format("YYYY-MM-DDTHH:mm"));
+    // console.log(editStartDate);
     updateTask.mutate(
       {
         id: task.id,
         title: editTitle,
         notes: editNotes,
         category_id: editCategoryId,
-        start_date: editStartDate || undefined,
-        end_date: editEndDate || undefined,
-        target_date: editTargetDate || undefined,
+        // start_date: editStartDate,
+        // end_date: editEndDate,
+        // target_date: editTargetDate,
+        // 2017-06-01T08:30
+        start_date:
+          editStartDate && moment(editStartDate).isValid()
+            ? moment(editStartDate).format("YYYY-MM-DDTHH:mm")
+            : null,
+
+        end_date:
+          editEndDate && moment(editEndDate).isValid()
+            ? moment(editEndDate).format("YYYY-MM-DDTHH:mm")
+            : null,
+
+        target_date:
+          editTargetDate && moment(editTargetDate).isValid()
+            ? moment(editTargetDate).format("YYYY-MM-DDTHH:mm")
+            : null,
+        // start_date: editStartDate
+        //   ? moment(editStartDate).format("YYYY-MM-DDTHH:mm")
+        //   : null,
+        // end_date: editEndDate
+        //   ? moment(editEndDate).format("YYYY-MM-DDTHH:mm")
+        //   : null,
+        // target_date: editTargetDate
+        //   ? moment(editTargetDate).format("YYYY-MM-DDTHH:mm")
+        //   : null,
       } as Task,
       {
         onSuccess: (res) => {
