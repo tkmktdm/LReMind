@@ -12,13 +12,14 @@ export default function GanttTask({
   onDateChange,
 }: {
   taskData: any;
-  onDateChange?: (task: Gantt.Task, start: Date, end: Date) => void;
+  onDateChange?: (task: Task, start: Date, end: Date) => void;
 }) {
   const ganttRef = useRef<HTMLDivElement>(null);
   const [headerHeight, setHeaderHeight] = useState(0);
+  const [rowHeight, setRowHeight] = useState(0);
   const onDateChangeRef = useRef(onDateChange);
   const pendingUpdateRef = useRef<{
-    task: Gantt.Task;
+    task: Task;
     start: Date;
     end: Date;
   } | null>(null);
@@ -68,7 +69,8 @@ export default function GanttTask({
       updateTask.mutate(
         {
           id: task.id,
-          title: task.name,
+          title: task.title,
+          // title: task.name,
           start_date:
             start && moment(start).isValid()
               ? moment(start).format("YYYY-MM-DDTHH:mm")
@@ -109,6 +111,13 @@ export default function GanttTask({
       setHeaderHeight(header.offsetHeight);
     }
 
+    const firstRow = ganttRef.current?.querySelector(
+      ".grid-row",
+    ) as SVGRectElement | null;
+    if (firstRow) {
+      setRowHeight(firstRow.getBBox().height);
+    }
+
     return () => {
       ganttRef.current?.removeEventListener("mouseup", handleMouseUp);
     };
@@ -123,11 +132,12 @@ export default function GanttTask({
           <Box
             w={"100%"}
             key={task?.id}
-            py={2}
+            h={rowHeight > 0 ? `${rowHeight}px` : undefined}
+            display="flex"
+            alignItems="center"
             borderBottom="1px solid #f0f0f0"
           >
-            {task?.name}: {headerHeight}
-            {/* {task?.name}: {headerHeight} */}
+            {task?.name}
           </Box>
         ))}
       </Box>

@@ -22,7 +22,7 @@ export type TaskGantt = {
 
 export type Task = {
   id: string;
-  title: string;
+  title?: string;
   notes?: string;
   status?: number;
   score?: number;
