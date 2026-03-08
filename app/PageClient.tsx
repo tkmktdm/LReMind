@@ -1,7 +1,7 @@
 "use client";
 
 import { Category, Category as CategoryType } from "@/types/Category";
-import { Task as TaskType } from "@/types/Task";
+import { Task } from "@/types/Task";
 import { User } from "@/types/User";
 import KanbanBoard from "../components/kanban/KanbanBoard";
 import {
@@ -21,7 +21,8 @@ import { useEffect, useState } from "react";
 
 import { SortableItem } from "@/components/Swipeable/SortableItem";
 import { SwipeableTask } from "@/components/Swipeable/SwipeableTask";
-import { Task, TaskCard } from "@/components/TaskCard";
+import { TaskCard } from "@/components/TaskCard";
+// import { Task, TaskCard } from "@/components/TaskCard";
 import {
   useDeleteTasks,
   useSortTasks,
@@ -155,8 +156,8 @@ export default function PageClient({
         {
           title: createTitle,
           notes: createNotes,
-          token: token,
-          user_id: user?.id,
+          // token: token,
+          user_id: user ? Number(user?.id) : undefined,
           category_id: createCategoryId,
           start_date: createStartDate || undefined,
           end_date: createEndDate || undefined,

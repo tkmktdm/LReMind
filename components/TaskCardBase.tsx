@@ -25,17 +25,18 @@ import {
 } from "@chakra-ui/react";
 import { EditIcon } from "@chakra-ui/icons";
 import { useState } from "react";
+import { Task } from "@/types/Task";
 
-export type Task = {
-  id: number;
-  title: string;
-  notes: string;
-  user_id?: number;
-  category_id?: number;
-  start_date?: string;
-  end_date?: string;
-  target_date?: string;
-};
+// export type Task = {
+//   id: number;
+//   title: string;
+//   notes?: string;
+//   user_id?: number;
+//   category_id?: number;
+//   start_date?: string;
+//   end_date?: string;
+//   target_date?: string;
+// };
 
 type Props = {
   id: number;

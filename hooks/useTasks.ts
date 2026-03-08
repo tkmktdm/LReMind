@@ -1,6 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteTasks, getTasks, sortTasks, storeTasks, updateTasks } from "@/app/api/task";
-import { Task } from "@/components/TaskCard";
+import {
+  deleteTasks,
+  getTasks,
+  sortTasks,
+  storeTasks,
+  updateTasks,
+} from "@/app/api/task";
+// import { Task } from "@/components/TaskCard";
+import { Task } from "@/types/Task";
 
 export function useTasks(token: string) {
   return useQuery({

@@ -26,23 +26,23 @@ import axios from "axios";
 import { useStoreTasks, useUpdateTasks } from "@/hooks/useTasks";
 import { storeTasks } from "@/app/api/task";
 import { Category } from "@/types/Category";
-import { DateTime, Settings, Info, Duration } from "luxon";
 import moment from "moment";
+import { Task } from "@/types/Task";
 
-export type Task = {
-  id: number;
-  title: string;
-  notes: string;
-  token?: string;
-  user_id?: number;
-  category_id?: number;
-  // start_date?: DateTime;
-  // end_date?: DateTime;
-  // target_date?: DateTime;
-  start_date?: string;
-  end_date?: string;
-  target_date?: string;
-};
+// export type Task = {
+//   id: number;
+//   title: string;
+//   notes?: string;
+//   token?: string;
+//   user_id?: number;
+//   category_id?: number;
+//   // start_date?: DateTime;
+//   // end_date?: DateTime;
+//   // target_date?: DateTime;
+//   start_date?: string;
+//   end_date?: string;
+//   target_date?: string;
+// };
 
 type Props = {
   id: number;
@@ -93,33 +93,18 @@ export const TaskCard = ({ id, url, task, category, categories }: Props) => {
         title: editTitle,
         notes: editNotes,
         category_id: editCategoryId,
-        // start_date: editStartDate,
-        // end_date: editEndDate,
-        // target_date: editTargetDate,
-        // 2017-06-01T08:30
         start_date:
           editStartDate && moment(editStartDate).isValid()
             ? moment(editStartDate).format("YYYY-MM-DDTHH:mm")
-            : null,
-
+            : undefined,
         end_date:
           editEndDate && moment(editEndDate).isValid()
             ? moment(editEndDate).format("YYYY-MM-DDTHH:mm")
-            : null,
-
+            : undefined,
         target_date:
           editTargetDate && moment(editTargetDate).isValid()
             ? moment(editTargetDate).format("YYYY-MM-DDTHH:mm")
-            : null,
-        // start_date: editStartDate
-        //   ? moment(editStartDate).format("YYYY-MM-DDTHH:mm")
-        //   : null,
-        // end_date: editEndDate
-        //   ? moment(editEndDate).format("YYYY-MM-DDTHH:mm")
-        //   : null,
-        // target_date: editTargetDate
-        //   ? moment(editTargetDate).format("YYYY-MM-DDTHH:mm")
-        //   : null,
+            : undefined,
       } as Task,
       {
         onSuccess: (res) => {

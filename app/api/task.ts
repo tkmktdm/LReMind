@@ -4,7 +4,8 @@ import Redis from "ioredis";
 import { signActionServer } from "@/services/signActionServices";
 import { cookies } from "next/headers";
 import { User } from "@/types/User";
-import { Task } from "@/components/TaskCardBase";
+import { Task } from "@/types/Task";
+// import { Task } from "@/components/TaskCardBase";
 
 // // タスク取得
 // export async function fetchTasks(token: string) {

@@ -1,5 +1,6 @@
 declare module "frappe-gantt" {
   export interface GanttTask {
+    target_date: boolean;
     id: string;
     name: string;
     start?: string;
