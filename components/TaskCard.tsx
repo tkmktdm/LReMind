@@ -22,6 +22,7 @@ import {
 } from "@chakra-ui/react";
 import { EditIcon } from "@chakra-ui/icons";
 import { useState } from "react";
+import { useDragHandle } from "@/components/Swipeable/SortableItem";
 import axios from "axios";
 import { useStoreTasks, useUpdateTasks } from "@/hooks/useTasks";
 import { storeTasks } from "@/app/api/task";
@@ -53,6 +54,7 @@ type Props = {
 };
 
 export const TaskCard = ({ id, url, task, category, categories }: Props) => {
+  const dragHandle = useDragHandle();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [editTitle, setEditTitle] = useState(task ? task.title : "");
   const [editNotes, setEditNotes] = useState(task ? task.notes : "");
@@ -144,6 +146,35 @@ export const TaskCard = ({ id, url, task, category, categories }: Props) => {
     >
       <CardBody p="0">
         <HStack>
+          {/* ドラッグハンドル */}
+          <div
+            {...dragHandle}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              paddingLeft: "8px",
+              paddingRight: "4px",
+              cursor: "grab",
+              touchAction: "none",
+              flexShrink: 0,
+              color: "#aaa",
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+            >
+              <circle cx="5" cy="4" r="1.5" />
+              <circle cx="5" cy="8" r="1.5" />
+              <circle cx="5" cy="12" r="1.5" />
+              <circle cx="11" cy="4" r="1.5" />
+              <circle cx="11" cy="8" r="1.5" />
+              <circle cx="11" cy="12" r="1.5" />
+            </svg>
+          </div>
           <VStack w="100%" p="0.5rem" alignItems="flex-start">
             <Text p="5px">{category?.name}</Text>
             <Heading p="0.5rem" size="md">

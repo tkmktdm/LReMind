@@ -8,6 +8,7 @@ import {
   DndContext,
   closestCenter,
   DragEndEvent,
+  DragStartEvent,
   useSensor,
   useSensors,
   PointerSensor,
@@ -97,6 +98,7 @@ export default function PageClient({
   );
   const [tasks, setTasks] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
+  const [isSorting, setIsSorting] = useState(false);
   console.log("user----");
   console.log(user);
   console.log(token);
@@ -136,7 +138,11 @@ export default function PageClient({
 
   if (isLoading) return <p>タスク取得中...</p>;
   // if (error) return <p>エラーが発生しました</p>;
+  const handleDragStart = (_event: DragStartEvent) => {
+    setIsSorting(true);
+  };
   const handleDragEnd = (event: DragEndEvent) => {
+    setIsSorting(false);
     const { active, over } = event;
     if (over && active.id !== over.id) {
       const oldIndex = tasks.findIndex((t) => t.id === active.id);
@@ -153,11 +159,17 @@ export default function PageClient({
 
   const isSubmit = async (type: string) => {
     const start =
-      moment(createStartDate).utc().format("YYYY-MM-DDTHH:mm") || undefined;
+      createStartDate && moment(createStartDate).isValid()
+        ? moment(createStartDate).utc().format("YYYY-MM-DDTHH:mm")
+        : undefined;
     const end =
-      moment(createEndDate).utc().format("YYYY-MM-DDTHH:mm") || undefined;
+      createEndDate && moment(createEndDate).isValid()
+        ? moment(createEndDate).utc().format("YYYY-MM-DDTHH:mm")
+        : undefined;
     const target =
-      moment(createTargetDate).utc().format("YYYY-MM-DDTHH:mm") || undefined;
+      createTargetDate && moment(createTargetDate).isValid()
+        ? moment(createTargetDate).utc().format("YYYY-MM-DDTHH:mm")
+        : undefined;
 
     if (type === "task") {
       storeTask.mutate(
@@ -219,6 +231,7 @@ export default function PageClient({
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
+            onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
           >
             <SortableContext
@@ -227,7 +240,7 @@ export default function PageClient({
             >
               {tasks.map((task) => (
                 <SortableItem key={task.id} id={task.id}>
-                  <SwipeableTask id={task.id} onDelete={handleDelete}>
+                  <SwipeableTask id={task.id} onDelete={handleDelete} isSorting={isSorting}>
                     <TaskCard
                       id={task.id}
                       url={`tasks/${task.id}`}
