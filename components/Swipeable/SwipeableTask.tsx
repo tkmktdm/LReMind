@@ -1,19 +1,37 @@
-import React, { useState } from "react";
-import { useSwipeable } from "react-swipeable";
-import { motion } from "framer-motion";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  motion,
+  useMotionValue,
+  useTransform,
+  animate,
+} from "framer-motion";
 
-const DELETE_THRESHOLD = 72; // px: この幅を超えたらスナップして削除ボタンを表示
+const DELETE_THRESHOLD = 72;
 
 type Props = {
   id: string;
   onDelete: (id: string) => void;
+  isSorting?: boolean;
   children: React.ReactNode;
 };
 
-export const SwipeableTask = ({ id, onDelete, children }: Props) => {
-  const [offset, setOffset] = useState(0);
+export const SwipeableTask = ({ id, onDelete, isSorting, children }: Props) => {
+  const x = useMotionValue(0);
   const [isRevealed, setIsRevealed] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // ゴミ箱アイコンの透明度を x から自動計算
+  const trashOpacity = useTransform(x, [-DELETE_THRESHOLD, -DELETE_THRESHOLD / 2, 0], [1, 0.5, 0]);
+
+  // ソート完了時にゴミ箱を閉じる
+  const prevIsSortingRef = useRef(isSorting);
+  useEffect(() => {
+    if (prevIsSortingRef.current === true && isSorting === false) {
+      animate(x, 0, { type: "spring", stiffness: 400, damping: 40 });
+      setIsRevealed(false);
+    }
+    prevIsSortingRef.current = isSorting;
+  }, [isSorting, x]);
 
   const handleDeleteConfirm = () => {
     setIsDeleting(true);
@@ -21,46 +39,34 @@ export const SwipeableTask = ({ id, onDelete, children }: Props) => {
   };
 
   const handleCancel = () => {
-    setOffset(0);
+    animate(x, 0, { type: "spring", stiffness: 400, damping: 40 });
     setIsRevealed(false);
   };
 
-  const handlers = useSwipeable({
-    onSwiping: (e) => {
-      if (isDeleting) return;
-      if (e.dir === "Left") {
-        if (isRevealed) {
-          // 2回目スワイプ: DELETE_THRESHOLD を起点にさらに左へ追従
-          setOffset(-DELETE_THRESHOLD - e.absX);
-        } else {
-          // 1回目スワイプ: DELETE_THRESHOLD まで追従
-          setOffset(Math.max(-DELETE_THRESHOLD, -e.absX));
-        }
-      } else if (e.dir === "Right" && isRevealed) {
-        setOffset(Math.min(0, -DELETE_THRESHOLD + e.absX));
-      }
-    },
-    onSwipedLeft: (e) => {
-      if (isDeleting) return;
-      if (isRevealed) {
-        // 2回目の左スワイプ → 削除
-        handleDeleteConfirm();
-      } else if (e.absX >= DELETE_THRESHOLD / 2) {
-        // 1回目: 閾値を超えたらスナップして削除ボタンを表示
-        setOffset(-DELETE_THRESHOLD);
+  const handleDragEnd = () => {
+    const current = x.get();
+
+    if (!isRevealed) {
+      if (current < -(DELETE_THRESHOLD / 2)) {
+        animate(x, -DELETE_THRESHOLD, { type: "spring", stiffness: 400, damping: 40 });
         setIsRevealed(true);
       } else {
-        setOffset(0);
+        animate(x, 0, { type: "spring", stiffness: 400, damping: 40 });
       }
-    },
-    onSwipedRight: () => {
-      if (isDeleting) return;
-      setOffset(0);
-      setIsRevealed(false);
-    },
-    preventScrollOnSwipe: true,
-    trackMouse: true,
-  });
+    } else {
+      // reveal済みの状態でさらに左スワイプ → 削除
+      if (current < -(DELETE_THRESHOLD * 1.5)) {
+        handleDeleteConfirm();
+      } else if (current > -(DELETE_THRESHOLD / 2)) {
+        // 右に戻した → キャンセル
+        animate(x, 0, { type: "spring", stiffness: 400, damping: 40 });
+        setIsRevealed(false);
+      } else {
+        // どちらでもなければ revealed 位置に戻す
+        animate(x, -DELETE_THRESHOLD, { type: "spring", stiffness: 400, damping: 40 });
+      }
+    }
+  };
 
   if (isDeleting) {
     return (
@@ -91,11 +97,15 @@ export const SwipeableTask = ({ id, onDelete, children }: Props) => {
           justifyContent: "center",
           cursor: "pointer",
           borderRadius: "0 8px 8px 0",
+          zIndex: 0,
         }}
-        onClick={isRevealed ? handleDeleteConfirm : undefined}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (isRevealed) handleDeleteConfirm();
+        }}
         title="削除"
       >
-        <svg
+        <motion.svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
           height="24"
@@ -105,31 +115,33 @@ export const SwipeableTask = ({ id, onDelete, children }: Props) => {
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          style={{
-            opacity: Math.min(1, Math.abs(offset) / DELETE_THRESHOLD),
-            transition: "opacity 0.1s",
-          }}
+          style={{ opacity: trashOpacity }}
         >
           <polyline points="3 6 5 6 21 6" />
           <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
           <path d="M10 11v6" />
           <path d="M14 11v6" />
           <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-        </svg>
+        </motion.svg>
       </div>
 
       {/* スワイプするカード本体 */}
       <motion.div
-        {...handlers}
-        style={{ touchAction: "pan-y", position: "relative", zIndex: 1 }}
-        animate={{ x: offset }}
-        transition={{ type: "spring", stiffness: 400, damping: 40 }}
+        drag="x"
+        dragDirectionLock
+        dragConstraints={{
+          left: isRevealed ? -DELETE_THRESHOLD * 2 : -DELETE_THRESHOLD,
+          right: 0,
+        }}
+        dragElastic={0.05}
+        style={{ x, position: "relative", zIndex: 1 }}
+        onDragEnd={handleDragEnd}
         onClick={isRevealed ? handleCancel : undefined}
       >
         {children}
       </motion.div>
 
-      {/* オーバーレイ: 削除ボタン表示中に他の場所をタップしたらキャンセル */}
+      {/* reveal 中に他の場所をタップしたらキャンセル */}
       {isRevealed && (
         <div
           style={{ position: "fixed", inset: 0, zIndex: 0 }}

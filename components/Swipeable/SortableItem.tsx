@@ -1,5 +1,12 @@
+import React, { createContext, useContext } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+
+type DragHandleListeners = Record<string, React.EventHandler<any>>;
+
+const DragHandleContext = createContext<DragHandleListeners>({});
+
+export const useDragHandle = () => useContext(DragHandleContext);
 
 export const SortableItem = ({
   id,
@@ -20,13 +27,15 @@ export const SortableItem = ({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    cursor: "grab",
+    opacity: isDragging ? 0.5 : 1,
     padding: "5px",
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      {children}
-    </div>
+    <DragHandleContext.Provider value={listeners ?? {}}>
+      <div ref={setNodeRef} style={style} {...attributes}>
+        {children}
+      </div>
+    </DragHandleContext.Provider>
   );
 };
