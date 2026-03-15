@@ -35,10 +35,10 @@ export default function GanttTask({
       .map((task: Task) => {
         if (!task) return null;
         const start = task.start_date
-          ? moment(String(task.start_date)).format("YYYY-MM-DD")
+          ? moment.utc(String(task.start_date)).local().format("YYYY-MM-DD")
           : moment().format("YYYY-MM-DD");
         const end = task.end_date
-          ? moment(String(task.end_date)).format("YYYY-MM-DD")
+          ? moment.utc(String(task.end_date)).local().format("YYYY-MM-DD")
           : moment().add(1, "days").format("YYYY-MM-DD");
         return {
           id: String(task.id),
@@ -73,11 +73,11 @@ export default function GanttTask({
           // title: task.name,
           start_date:
             start && moment(start).isValid()
-              ? moment(start).format("YYYY-MM-DDTHH:mm")
+              ? moment(start).utc().format("YYYY-MM-DDTHH:mm")
               : undefined,
           end_date:
             end && moment(end).isValid()
-              ? moment(end).format("YYYY-MM-DDTHH:mm")
+              ? moment(end).utc().format("YYYY-MM-DDTHH:mm")
               : undefined,
         } as Task,
         {

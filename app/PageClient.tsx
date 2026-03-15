@@ -51,6 +51,7 @@ import {
   useStoreCategories,
 } from "@/hooks/useCategories";
 import Gantt from "@/components/frappe/gantt";
+import moment from "moment";
 
 type Props = {
   user: User | null;
@@ -151,17 +152,23 @@ export default function PageClient({
   };
 
   const isSubmit = async (type: string) => {
+    const start =
+      moment(createStartDate).utc().format("YYYY-MM-DDTHH:mm") || undefined;
+    const end =
+      moment(createEndDate).utc().format("YYYY-MM-DDTHH:mm") || undefined;
+    const target =
+      moment(createTargetDate).utc().format("YYYY-MM-DDTHH:mm") || undefined;
+
     if (type === "task") {
       storeTask.mutate(
         {
           title: createTitle,
           notes: createNotes,
-          // token: token,
           user_id: user ? Number(user?.id) : undefined,
           category_id: createCategoryId,
-          start_date: createStartDate || undefined,
-          end_date: createEndDate || undefined,
-          target_date: createTargetDate || undefined,
+          start_date: start,
+          end_date: end,
+          target_date: target,
         } as Task,
         {
           onSuccess: () => {

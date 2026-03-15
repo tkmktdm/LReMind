@@ -61,13 +61,16 @@ export const TaskCard = ({ id, url, task, category, categories }: Props) => {
   );
 
   const [editStartDate, setEditStartDate] = useState(
-    task ? moment(task?.start_date).local().format("YYYY-MM-DDTHH:mm") : "",
+    task ? moment(task?.start_date).format("YYYY-MM-DDTHH:mm") : "",
+    // task ? moment(task?.start_date).local().format("YYYY-MM-DDTHH:mm") : "",
   );
   const [editEndDate, setEditEndDate] = useState(
-    task ? moment(task?.end_date).local().format("YYYY-MM-DDTHH:mm") : "",
+    task ? moment(task?.end_date).format("YYYY-MM-DDTHH:mm") : "",
+    // task ? moment(task?.end_date).local.format("YYYY-MM-DDTHH:mm") : "",
   );
   const [editTargetDate, setEditTargetDate] = useState(
-    task ? moment(task?.target_date).local().format("YYYY-MM-DDTHH:mm") : "",
+    task ? moment(task?.target_date).format("YYYY-MM-DDTHH:mm") : "",
+    // task ? moment(task?.target_date).local.format("YYYY-MM-DDTHH:mm") : "",
   );
   const updateTask = useUpdateTasks();
   const storeTask = useStoreTasks();
@@ -95,15 +98,15 @@ export const TaskCard = ({ id, url, task, category, categories }: Props) => {
         category_id: editCategoryId,
         start_date:
           editStartDate && moment(editStartDate).isValid()
-            ? moment(editStartDate).format("YYYY-MM-DDTHH:mm")
+            ? moment(editStartDate).utc().format("YYYY-MM-DDTHH:mm")
             : undefined,
         end_date:
           editEndDate && moment(editEndDate).isValid()
-            ? moment(editEndDate).format("YYYY-MM-DDTHH:mm")
+            ? moment(editEndDate).utc().format("YYYY-MM-DDTHH:mm")
             : undefined,
         target_date:
           editTargetDate && moment(editTargetDate).isValid()
-            ? moment(editTargetDate).format("YYYY-MM-DDTHH:mm")
+            ? moment(editTargetDate).utc().format("YYYY-MM-DDTHH:mm")
             : undefined,
       } as Task,
       {
